@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SmartDiet AI — PoC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow">
+    <!-- Google Fonts (falls back to system if offline) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text: #1f2937; /* Dark Gray */
+        --muted: #4b5563;
+        --accent: #10b981; /* Green */
+        --cta: #f97316; /* Orange */
+        --line: #e5e7eb; /* Light border */
+        --panel: #f9fafb; /* Light panel bg */
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
+          "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px;
+      }
+      .btn-print {
+        display: inline-block;
+        padding: 10px 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--text);
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      header.cover {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 48px;
+        margin: 24px 0 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #065f46;
+        background: #d1fae5;
+        border: 1px solid #a7f3d0;
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+      h1 {
+        font-size: 40px;
+        line-height: 1.1;
+        margin: 16px 0 12px;
+      }
+      h2 {
+        font-size: 28px;
+        line-height: 1.2;
+        margin: 0 0 12px;
+      }
+      h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+      }
+      p {
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 16px 0;
+      }
+      .kpi {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        background: #fff7ed;
+        color: #7c2d12;
+        font-weight: 600;
+      }
+      ul {
+        padding-left: 18px;
+        margin: 8px 0;
+      }
+      li {
+        margin: 6px 0;
+      }
+      .callout {
+        border-left: 6px solid var(--accent);
+        padding: 10px 14px;
+        background: #ecfdf5;
+        border-radius: 8px;
+        margin: 12px 0;
+      }
+      .cta-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin-top: 10px;
+      }
+      .cta-btn {
+        background: var(--cta);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+      }
+      figure {
+        margin: 12px 0;
+      }
+      figcaption {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 6px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 10px;
+        vertical-align: top;
+      }
+      th {
+        background: #f3f4f6;
+        text-align: left;
+      }
+      .pill {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #ffffff;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .sep {
+        height: 1px;
+        background: var(--line);
+        margin: 28px 0;
+      }
+
+      /* nice print for A4 */
+      @media print {
+        .btn-print,
+        .web-only {
+          display: none !important;
+        }
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .container {
+          padding: 24px 28px;
+        }
+        section {
+          page-break-inside: avoid;
+        }
+        .page-break {
+          page-break-before: always;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="web-only" style="display: flex; justify-content: flex-end">
+        <button class="btn-print" onclick="window.print()">
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+
+      <!-- COVER -->
+      <header class="cover">
+        <span class="badge">Proof of Concept</span>
+        <h1>SmartDiet AI</h1>
+        <p>
+          AI-powered personalization & daily motivation to improve gym
+          membership retention and unlock upsell potential.
+        </p>
+        <div class="grid-2" style="margin-top: 18px">
+          <div class="panel">
+            <h3>For whom?</h3>
+            <p>
+              Gym members approaching the end of their 6-month plan; gym teams
+              focused on retention & upsell.
+            </p>
+            <div class="callout">
+              <strong>CTA (LP):</strong>
+              <em
+                >Extend your membership & get a free personalized AI diet
+                plan.</em
+              >
+            </div>
+          </div>
+          <div class="panel">
+            <h3>Deliverables (this PoC)</h3>
+            <ul>
+              <li>
+                Landing page link (V0.dev) —
+                <strong>
+                  <a href="https://v0-smart-diet-ai-landing-page.vercel.app/">
+                    Landing Page
+                  </a>
+                </strong>
+              </li>
+              <li>User flow & automation diagram (n8n + AI)</li>
+              <li>Technology rationale</li>
+              <li>Validation & business impact</li>
+            </ul>
+          </div>
+        </div>
+        <div class="kpi" style="margin-top: 14px">
+          <span
+            >Retention is <strong>5–7×</strong> cheaper than acquisition • 50%
+            quit within 6 months (motivation & personalization gap)</span
+          >
+        </div>
+        <p style="margin-top: 10px; font-size: 13px" class="muted">
+          Prepared by: <strong>Ariel Szczepański</strong> • Role: Junior Product
+          Engineer (Vibe Coder) • Contact:
+          <strong>dev.ariel.szczepanski@gmail.com</strong>
+        </p>
+      </header>
+
+      <!-- PROBLEM + SOLUTION -->
+      <section>
+        <div class="grid-2">
+          <div>
+            <h2>Problem</h2>
+            <ul>
+              <li>Members lose momentum after initial 3–6 months.</li>
+              <li>No personalized guidance → diet & training drift.</li>
+              <li>Renewal reminders lack a motivating value proposition.</li>
+            </ul>
+          </div>
+          <div>
+            <h2>
+              Solution: <span style="color: var(--accent)">SmartDiet AI</span>
+            </h2>
+            <div class="panel">
+              <ul>
+                <li>
+                  <strong>Membership extension</strong> unlocks a
+                  <strong>free personalized AI diet plan</strong>.
+                </li>
+                <li>
+                  Daily delivery via <strong>Email</strong> or
+                  <strong>WhatsApp</strong> at 07:00.
+                </li>
+                <li>Subtle upsell CTA to book a nutritionist review.</li>
+              </ul>
+              <div class="cta-box">
+                <div>
+                  <strong>Primary CTA:</strong> Extend membership & claim your
+                  plan
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- USER FLOW -->
+      <section>
+        <h2>User Journey & Automation</h2>
+        <ol>
+          <li>Email/SMS → offer: <em>Extend + Free AI Diet Plan</em></li>
+          <li>Landing Page (V0.dev) → CTA: <em>Extend Now</em></li>
+          <li>
+            Preferences form → goals, allergies, food choices, contact channel
+          </li>
+          <li>Webhook → <strong>n8n/Make</strong> workflow</li>
+          <li>
+            AI request → <strong>OpenAI</strong> generates structured daily meal
+            plan
+          </li>
+          <li>
+            Delivery → <strong>SendGrid</strong> (Email) or
+            <strong>Twilio</strong> (WhatsApp) at 07:00 daily
+          </li>
+          <li>Optional upsell CTA in each message: book a nutritionist</li>
+        </ol>
+
+        <!-- Flow image -->
+        <figure class="panel">
+          <!-- TODO: Put your diagram PNG next to this file, keep the same name or change src -->
+          <img
+            src="smartdiet_ai_userflow_clean.png"
+            alt="SmartDiet AI — user flow diagram"
+            style="
+              width: 100%;
+              border-radius: 10px;
+              border: 1px solid var(--line);
+            "
+          />
+          <figcaption>
+            Automation: n8n/Make → OpenAI → SendGrid/Twilio (daily at 07:00).
+          </figcaption>
+        </figure>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- TECHNOLOGY -->
+      <section>
+        <h2>Technology Justification</h2>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>PoC Stack (fast & low-cost)</h3>
+            <ul>
+              <li>
+                <span class="pill">AI</span> OpenAI GPT-4o-mini — structured
+                meal plan generation
+              </li>
+              <li>
+                <span class="pill">Automation</span> n8n / Make — scheduling,
+                branching, API orchestration
+              </li>
+              <li>
+                <span class="pill">LP & Form</span> V0.dev + Typeform/Google
+                Forms
+              </li>
+              <li>
+                <span class="pill">Comms</span> SendGrid (Email), Twilio
+                (WhatsApp)
+              </li>
+              <li>
+                <span class="pill">Storage (PoC)</span> Google Sheets or n8n
+                data store
+              </li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>If this were production</h3>
+            <ul>
+              <li>
+                Nest.js / Fastify backend, typed prompts, observability &
+                logging
+              </li>
+              <li>Postgres (Supabase) + Redis cache</li>
+              <li>Custom React form on LP; role-based dashboards</li>
+              <li>
+                Dockerized CI/CD (Vercel + Supabase), feature flags, analytics
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- VALIDATION -->
+      <section>
+        <h2>Validation Plan</h2>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Pilot & A/B</h3>
+            <ul>
+              <li>Pilot: 50 members nearing renewal</li>
+              <li>A/B: standard reminder vs. reminder + AI diet incentive</li>
+              <li>Run 2–4 weeks, measure extension rate uplift</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Engagement & Feedback</h3>
+            <ul>
+              <li>Open/click rates on daily messages</li>
+              <li>Survey: motivation, usefulness, NPS / referral intent</li>
+              <li>Track 6-month retention & upsell conversion</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- ROI -->
+      <section>
+        <h2>Business Impact (Example)</h2>
+        <table class="panel">
+          <thead>
+            <tr>
+              <th>Input</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Members approaching renewal</td>
+              <td>
+                <strong>200</strong>
+                <!-- TODO: edit -->
+              </td>
+            </tr>
+            <tr>
+              <td>Monthly price (PLN)</td>
+              <td>
+                <strong>150</strong>
+                <!-- TODO: edit -->
+              </td>
+            </tr>
+            <tr>
+              <td>Baseline extension rate</td>
+              <td>
+                <strong>10%</strong>
+                <!-- TODO: edit -->
+              </td>
+            </tr>
+            <tr>
+              <td>With SmartDiet AI</td>
+              <td>
+                <strong>20%</strong>
+                <!-- TODO: edit -->
+              </td>
+            </tr>
+            <tr>
+              <td>Incremental renewals (Δ)</td>
+              <td>
+                <strong>+20 people</strong>
+                <!-- auto from example -->
+              </td>
+            </tr>
+            <tr>
+              <td>Added revenue (6 months)</td>
+              <td><strong>18 000 PLN</strong> (20 × 6 × 150)</td>
+            </tr>
+            <tr>
+              <td>Automation cost / month</td>
+              <td><strong>&lt; 500 PLN</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          <strong>Summary:</strong> Personalization + daily motivation raises
+          renewals while keeping marginal costs near zero.
+        </div>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- LP LINK -->
+      <section>
+        <h2>Landing Page</h2>
+
+        <p style="font-weight: 700; font-size: 18px">
+          <!-- TODO: paste your real LP URL -->
+          <a
+            href="https://v0-smart-diet-ai-landing-page.vercel.app/"
+            target="_blank"
+            >Personalized AI Diet Plan</a
+          >
+        </p>
+      </section>
+
+      <div class="sep"></div>
+
+      <!-- FOOTER -->
+      <footer>
+        <p style="font-size: 13px; color: var(--muted)">
+          Contact: <strong>dev.ariel.szczepanski@gmail.com</strong> •
+          <a href="https://www.linkedin.com/in/ariel-szczepanski/">LinkedIn</a>
+        </p>
+      </footer>
+
+      <div class="page-break"></div>
+    </div>
+
+    <!-- (Optional) tiny JS to insert current date in the PDF footer if you want -->
+    <script>
+      // Example: add today’s date into title attribute
+      document.title =
+        "SmartDiet AI — PoC (" + new Date().toLocaleDateString() + ")";
+    </script>
+  </body>
+</html>
